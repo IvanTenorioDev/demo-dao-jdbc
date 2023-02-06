@@ -2,6 +2,7 @@ package model.dao;
 
 import java.util.List;
 
+import model.entities.Department;
 import model.entities.Seller;
 
 /**
@@ -45,4 +46,5 @@ public interface SellerDao {
 	 * @return Lista de objetos do tipo Seller encontrados.
 	 */
 	List<Seller> findAll();
+	List<Seller> findByDepartment(Department department);
 }
