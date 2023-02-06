@@ -76,33 +76,28 @@ public class SellerDaoJDBC implements SellerDao {
 		return obj;
 	}
 
-	// Método que retorna uma lista de vendedores de acordo com o departamento
 	@Override
-	public List<Seller> findByDepartment(Department department) {
+	public List<Seller> findAll() {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			// cria um objeto PreparedStatement com uma query sql para obter os dados dos vendedores de acordo com o departamento
+			// cria um objeto PreparedStatement com uma query sql para obter os dados dos
+			// vendedores de acordo com o departamento
 			st = conn.prepareStatement(
-					"SELECT seller.*,department.Name as DepName "
-					+ "FROM seller INNER JOIN department "
-					+ "ON seller.DepartmentId = department.Id "
-					+ "WHERE DepartmentId = ? "
-					+ "ORDER BY Name");
-			
-			// define o parâmetro da query sql
-			st.setInt(1, department.getId());
+					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
+							+ "ON seller.DepartmentId = department.Id " + "ORDER BY Name");
+
 			// executa a query sql e armazena o resultado no objeto ResultSet
 			rs = st.executeQuery();
-			
+
 			List<Seller> list = new ArrayList<>(); // cria uma lista de Seller
 			Map<Integer, Department> map = new HashMap<>(); // cria um mapa para armazenar os objetos Department
-			
+
 			// enquanto houver dados no ResultSet
 			while (rs.next()) {
-				
+
 				Department dep = map.get(rs.getInt("DepartmentId")); // obtém o objeto Department no mapa
-				
+
 				// se o mapa não tiver um objeto Department para o id obtido
 				if (dep == null) {
 					// cria um objeto Department a partir dos dados no ResultSet
@@ -110,19 +105,82 @@ public class SellerDaoJDBC implements SellerDao {
 					// armazena o objeto Department no mapa
 					map.put(rs.getInt("DepartmentId"), dep);
 				}
-				
+
 				// cria um objeto Seller a partir dos dados no ResutSet
 				Seller obj = instantiateSeller(rs, dep);
-				list.add(obj); // adiciona o objeto Seller à lista 
+				list.add(obj); // adiciona o objeto Seller à lista
 			}
 			return list; // retorna a lista de Seller
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
 			DB.closeStatement(st); // fecha o objeto PreparedStatement
 			DB.closeResultSet(rs); // fecha o objeto ResultSet
 		}
 	}
+
+	// Método que retorna uma lista de vendedores de acordo com o DEPARTAMENTO
+	@Override
+	public List<Seller> findByDepartment(Department department) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			// cria um objeto PreparedStatement com uma query sql para obter os dados dos
+			// vendedores de acordo com o departamento
+			st = conn.prepareStatement(
+					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
+							+ "ON seller.DepartmentId = department.Id " + "WHERE DepartmentId = ? " + "ORDER BY Name");
+
+			// define o parâmetro da query sql
+			st.setInt(1, department.getId());
+			// executa a query sql e armazena o resultado no objeto ResultSet
+			rs = st.executeQuery();
+
+			List<Seller> list = new ArrayList<>(); // cria uma lista de Seller
+			Map<Integer, Department> map = new HashMap<>(); // cria um mapa para armazenar os objetos Department
+
+			// enquanto houver dados no ResultSet
+			while (rs.next()) {
+
+				Department dep = map.get(rs.getInt("DepartmentId")); // obtém o objeto Department no mapa
+
+				// se o mapa não tiver um objeto Department para o id obtido
+				if (dep == null) {
+					// cria um objeto Department a partir dos dados no ResultSet
+					dep = instantiateDepartment(rs);
+					// armazena o objeto Department no mapa
+					map.put(rs.getInt("DepartmentId"), dep);
+				}
+
+				// cria um objeto Seller a partir dos dados no ResutSet
+				Seller obj = instantiateSeller(rs, dep);
+				list.add(obj); // adiciona o objeto Seller à lista
+			}
+			return list; // retorna a lista de Seller
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st); // fecha o objeto PreparedStatement
+			DB.closeResultSet(rs); // fecha o objeto ResultSet
+		}
+	}
+
+	@Override
+	public void insert(Seller obj) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void update(Seller obj) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteById(Integer id) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
