@@ -81,48 +81,70 @@ public class SellerDaoJDBC implements SellerDao {
 	public void insert(Seller obj) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement(
-					"INSERT INTO seller "
-					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
-					+ "VALUES "
-					+ "(?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
-			
+			// Cria a instrução SQL para inserir um vendedor na tabela seller
+			st = conn.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES " + "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+			// Define os valores para os parâmetros da instrução SQL
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());
 			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
 			st.setDouble(4, obj.getBaseSalary());
 			st.setInt(5, obj.getDepartment().getId());
-			
+
+			// Executa a instrução SQL e verifica se alguma linha foi afetada
 			int rowsAffected = st.executeUpdate();
-			
-			if(rowsAffected > 0) {
+
+			if (rowsAffected > 0) {
+				// Se sim, recupera o id gerado automaticamente pelo banco de dados
 				ResultSet rs = st.getGeneratedKeys();
-				if(rs.next()) {
+				if (rs.next()) {
 					int id = rs.getInt(1);
 					obj.setId(id);
 				}
+				// Fecha o result set
 				DB.closeResultSet(rs);
-			}
-			else {
+			} else {
+				// Se não, lança uma exceção
 				throw new DbException("Erro inesperado! Nenhuma linha foi afetada! ");
-			}		
-		}
-		catch (SQLException e) {
+			}
+		} catch (SQLException e) {
+			// Lança uma exceção com a mensagem de erro da exceção SQL
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
+			// Fecha o statement, independentemente do resultado da operação
 			DB.closeStatement(st);
-			
 		}
-		
-		
-
 	}
 
 	@Override
 	public void update(Seller obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try {
+			// Cria a instrução SQL para inserir um vendedor na tabela seller
+			st = conn.prepareStatement(
+					"UPDATE seller " 
+					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+					+ "WHERE Id = ? " );
+
+			// Define os valores para os parâmetros da instrução SQL
+			st.setString(1, obj.getName());
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setDouble(4, obj.getBaseSalary());
+			st.setInt(5, obj.getDepartment().getId());
+			st.setInt(6, obj.getId());
+
+			// Executa a instrução 
+			st.executeUpdate();
+
+		} catch (SQLException e) {
+			// Lança uma exceção com a mensagem de erro da exceção SQL
+			throw new DbException(e.getMessage());
+		} finally {
+			// Fecha o statement, independentemente do resultado da operação
+			DB.closeStatement(st);
+		}
 
 	}
 
