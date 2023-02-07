@@ -122,10 +122,8 @@ public class SellerDaoJDBC implements SellerDao {
 		PreparedStatement st = null;
 		try {
 			// Cria a instrução SQL para inserir um vendedor na tabela seller
-			st = conn.prepareStatement(
-					"UPDATE seller " 
-					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
-					+ "WHERE Id = ? " );
+			st = conn.prepareStatement("UPDATE seller "
+					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " + "WHERE Id = ? ");
 
 			// Define os valores para os parâmetros da instrução SQL
 			st.setString(1, obj.getName());
@@ -135,7 +133,7 @@ public class SellerDaoJDBC implements SellerDao {
 			st.setInt(5, obj.getDepartment().getId());
 			st.setInt(6, obj.getId());
 
-			// Executa a instrução 
+			// Executa a instrução
 			st.executeUpdate();
 
 		} catch (SQLException e) {
@@ -149,22 +147,26 @@ public class SellerDaoJDBC implements SellerDao {
 	}
 
 	@Override
+	// Deleta o vendedor pelo ID
 	public void deleteById(Integer id) {
-		PreparedStatement st = null;		
+		// Prepara o statement para a query
+		PreparedStatement st = null;
 		try {
+			// Query para deletar o vendedor
 			st = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
-			
+
+			// Atribui o valor do ID ao statement
 			st.setInt(1, id);
-			
+
+			// Executa a query
 			st.executeUpdate();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
+			// Lança uma exceção caso haja algum erro
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
+			// Fecha o statement
 			DB.closeStatement(st);
 		}
-
 	}
 
 	@Override
