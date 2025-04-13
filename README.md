@@ -62,4 +62,4 @@
 
 ## 🔗 **Contato**  
 - Localização: `Cabedelo, Paraíba, Brasil`  
-- LinkedIn: [Perfil LinkedIn]([https://linkedin.com/in/seu-perfil](https://br.linkedin.com/in/ivan-carlos-carvalho-tenorio-8596a0219))  
+- LinkedIn: [Perfil LinkedIn] https://br.linkedin.com/in/ivan-carlos-carvalho-tenorio-8596a0219 
